@@ -23,6 +23,10 @@ const Game = () => {
     }
   };
 
+  /**
+   * Called when a tile is clicked. It restores board's previous state.
+   *
+   */
   const undoLastAction = () => {
     const lastStep = steps.slice(-1);
     const otherSteps = steps.slice(0, -1);
@@ -31,6 +35,12 @@ const Game = () => {
     setUserX(!userX);
   };
 
+  /**
+   * It generates the html for the undo button
+   *
+   * @returns - A button html or an empty string
+   *
+   */
   const generateUndoButton = () => {
     if (steps.length) {
       return (
