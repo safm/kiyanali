@@ -6,11 +6,13 @@ const Game = () => {
   const [userX, setUserX] = useState(true);
 
   const onTileClick = (position) => {
-    const tempTiles = [...tiles];
-    const charToInsert = userX ? "X" : "O";
-    tempTiles[position] = charToInsert;
-    setTile(tempTiles);
-    setUserX(!userX);
+    if (!tiles[position]) {
+      const tempTiles = [...tiles];
+      const charToInsert = userX ? "X" : "O";
+      tempTiles[position] = charToInsert;
+      setTile(tempTiles);
+      setUserX(!userX);
+    }
   };
 
   return (
