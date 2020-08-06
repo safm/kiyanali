@@ -24,7 +24,7 @@ const Game = () => {
   };
 
   /**
-   * Called when a tile is clicked. It restores board's previous state.
+   * Called when a undo is clicked. It restores board's previous state.
    *
    */
   const undoLastAction = () => {
@@ -36,6 +36,16 @@ const Game = () => {
   };
 
   /**
+   * Called when a reset is clicked. It reset the board to be empty.
+   *
+   */
+  const resetBoard = () => {
+    setSteps([]);
+    setTile(Array(9).fill(null));
+    setUserX(true);
+  };
+
+  /**
    * It generates the html for the undo button
    *
    * @returns - A button html or an empty string
@@ -44,9 +54,15 @@ const Game = () => {
   const generateUndoButton = () => {
     if (steps.length) {
       return (
-        <button id="undo" onClick={undoLastAction}>
-          Undo
-        </button>
+        <>
+          <button id="undo" onClick={undoLastAction}>
+            Undo
+          </button>
+
+          <button id="reset" onClick={resetBoard}>
+            Reset
+          </button>
+        </>
       );
     } else {
       return "";
