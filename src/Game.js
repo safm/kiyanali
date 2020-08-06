@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Board from "./Board";
 
 const Game = () => {
+  const [steps, setSteps] = useState([]);
   const [tiles, setTile] = useState(Array(9).fill(null));
   const [userX, setUserX] = useState(true);
 
@@ -18,12 +19,34 @@ const Game = () => {
       tempTiles[position] = charToInsert;
       setTile(tempTiles);
       setUserX(!userX);
+      setSteps([...steps, tiles]);
+    }
+  };
+
+  const undoLastAction = () => {
+    const lastStep = steps.slice(-1);
+    const otherSteps = steps.slice(0, -1);
+    setSteps(otherSteps);
+    setTile(lastStep[0]);
+    setUserX(!userX);
+  };
+
+  const generateUndoButton = () => {
+    if (steps.length) {
+      return (
+        <button id="undo" onClick={undoLastAction}>
+          Undo
+        </button>
+      );
+    } else {
+      return "";
     }
   };
 
   return (
     <div id="game">
       <Board tiles={tiles} onTileClick={onTileClick} />
+      <div id="footer">{generateUndoButton()}</div>
     </div>
   );
 };
