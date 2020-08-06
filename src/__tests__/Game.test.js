@@ -81,4 +81,33 @@ describe("Game Unit Test", () => {
       });
     });
   });
+
+  describe("reset button", () => {
+    it("should show reset button only when a tile has been selected", () => {
+      const wrapper = mount(<Game />);
+      const firstBtn = wrapper.find("button.tile").at(0);
+      let resetBtn = wrapper.find("#reset");
+      expect(resetBtn.length).toBe(0);
+      firstBtn.simulate("click");
+      resetBtn = wrapper.find("#reset");
+      expect(resetBtn.length).toBe(1);
+    });
+
+    describe("when clicked", () => {
+      it("should reset the board to empty tiles", () => {
+        const wrapper = mount(<Game />);
+        const firstBtn = wrapper.find("button.tile").at(0);
+        const secondBtn = wrapper.find("button.tile").at(1);
+        const thirdBtn = wrapper.find("button.tile").at(2);
+        firstBtn.simulate("click");
+        secondBtn.simulate("click");
+        thirdBtn.simulate("click");
+        const resetBtn = wrapper.find("#reset");
+        resetBtn.simulate("click");
+        expect(firstBtn.text()).toBe("");
+        expect(secondBtn.text()).toBe("");
+        expect(thirdBtn.text()).toBe("");
+      });
+    });
+  });
 });
