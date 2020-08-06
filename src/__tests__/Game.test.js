@@ -8,6 +8,11 @@ describe("Game Unit Test", () => {
       const wrapper = shallow(<Game />);
       expect(wrapper.find("div#game").length).toBe(1);
     });
+
+    it("should have a div with the id 'footer'", () => {
+      const wrapper = shallow(<Game />);
+      expect(wrapper.find("div#footer").length).toBe(1);
+    });
   });
 
   describe("when mounted", () => {
@@ -50,6 +55,30 @@ describe("Game Unit Test", () => {
       expect(firstBtn.text()).toBe("X");
       firstBtn.simulate("click");
       expect(firstBtn.text()).toBe("X");
+    });
+  });
+
+  describe("undo button", () => {
+    it("should show undo button only when a tile has been selected", () => {
+      const wrapper = mount(<Game />);
+      const firstBtn = wrapper.find("button.tile").at(0);
+      let undoBtn = wrapper.find("#undo");
+      expect(undoBtn.length).toBe(0);
+      firstBtn.simulate("click");
+      undoBtn = wrapper.find("#undo");
+      expect(undoBtn.length).toBe(1);
+    });
+
+    describe("when clicked", () => {
+      it("should restore the previous state of the game", () => {
+        const wrapper = mount(<Game />);
+        const firstBtn = wrapper.find("button.tile").at(0);
+        firstBtn.simulate("click");
+        expect(firstBtn.text()).toBe("X");
+        const undoBtn = wrapper.find("#undo");
+        undoBtn.simulate("click");
+        expect(firstBtn.text()).toBe("");
+      });
     });
   });
 });
