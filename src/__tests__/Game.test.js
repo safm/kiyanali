@@ -4,7 +4,7 @@ import Game from "../Game";
 
 describe("Game Unit Test", () => {
   describe("when rendered", () => {
-    it("should show 'Hello World'", () => {
+    it("should have div with id 'game'", () => {
       const wrapper = shallow(<Game />);
       expect(wrapper.find("div#game").length).toBe(1);
     });
