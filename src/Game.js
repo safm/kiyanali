@@ -71,6 +71,7 @@ const Game = () => {
 
   return (
     <div id="game">
+      <div id="header">Next User: {userX ? "X" : "O"}</div>
       <Board tiles={tiles} onTileClick={onTileClick} />
       <div id="footer">{generateUndoButton()}</div>
     </div>
