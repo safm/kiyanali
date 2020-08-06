@@ -13,6 +13,11 @@ describe("Game Unit Test", () => {
       const wrapper = shallow(<Game />);
       expect(wrapper.find("div#footer").length).toBe(1);
     });
+
+    it("should have a div with the id 'header'", () => {
+      const wrapper = shallow(<Game />);
+      expect(wrapper.find("div#header").length).toBe(1);
+    });
   });
 
   describe("when mounted", () => {
@@ -107,6 +112,26 @@ describe("Game Unit Test", () => {
         expect(firstBtn.text()).toBe("");
         expect(secondBtn.text()).toBe("");
         expect(thirdBtn.text()).toBe("");
+      });
+    });
+  });
+
+  describe("header", () => {
+    describe("when it is 'X' turn", () => {
+      it("should show 'Next User: X'", () => {
+        const wrapper = mount(<Game />);
+        const header = wrapper.find("#header");
+        expect(header.text()).toBe("Next User: X");
+      });
+    });
+
+    describe("when it is 'O' turn", () => {
+      it("should show 'Next User: O'", () => {
+        const wrapper = mount(<Game />);
+        const firstBtn = wrapper.find("button.tile").at(0);
+        firstBtn.simulate("click");
+        const header = wrapper.find("#header");
+        expect(header.text()).toBe("Next User: O");
       });
     });
   });
