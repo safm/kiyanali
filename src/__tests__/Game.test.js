@@ -13,17 +13,17 @@ describe("Game Unit Test", () => {
       const wrapper = shallow(<Game />);
       expect(wrapper.find("div#footer").length).toBe(1);
     });
-
-    it("should have a div with the id 'header'", () => {
-      const wrapper = shallow(<Game />);
-      expect(wrapper.find("div#header").length).toBe(1);
-    });
   });
 
   describe("when mounted", () => {
     it("should render Board component", () => {
       const wrapper = mount(<Game />);
       expect(wrapper.find("div#board").length).toBe(1);
+    });
+
+    it("should have a div with the id 'header'", () => {
+      const wrapper = mount(<Game />);
+      expect(wrapper.find("div#header").length).toBe(1);
     });
 
     it("should render 9 tiles", () => {
@@ -60,6 +60,34 @@ describe("Game Unit Test", () => {
       expect(firstBtn.text()).toBe("X");
       firstBtn.simulate("click");
       expect(firstBtn.text()).toBe("X");
+    });
+
+    describe("when game is over", () => {
+      describe("when player X is a winner", () => {
+        it("should show correct message in the header", () => {
+          const wrapper = mount(<Game />);
+          wrapper.find("button.tile").at(0).simulate("click");
+          wrapper.find("button.tile").at(3).simulate("click");
+          wrapper.find("button.tile").at(1).simulate("click");
+          wrapper.find("button.tile").at(4).simulate("click");
+          wrapper.find("button.tile").at(2).simulate("click");
+          expect(wrapper.find("#header").text()).toBe("Game Over! Player X is the winner");
+        });
+      });
+
+      describe("user tries to play next", () => {
+        it("should not be allowed", () => {
+          const wrapper = mount(<Game />);
+          wrapper.find("button.tile").at(0).simulate("click");
+          wrapper.find("button.tile").at(3).simulate("click");
+          wrapper.find("button.tile").at(1).simulate("click");
+          wrapper.find("button.tile").at(4).simulate("click");
+          wrapper.find("button.tile").at(2).simulate("click");
+          const extraBtn = wrapper.find("button.tile").at(8);
+          extraBtn.simulate("click");
+          expect(extraBtn.text()).toBe("");
+        });
+      });
     });
   });
 
@@ -112,26 +140,6 @@ describe("Game Unit Test", () => {
         expect(firstBtn.text()).toBe("");
         expect(secondBtn.text()).toBe("");
         expect(thirdBtn.text()).toBe("");
-      });
-    });
-  });
-
-  describe("header", () => {
-    describe("when it is 'X' turn", () => {
-      it("should show 'Next User: X'", () => {
-        const wrapper = mount(<Game />);
-        const header = wrapper.find("#header");
-        expect(header.text()).toBe("Next User: X");
-      });
-    });
-
-    describe("when it is 'O' turn", () => {
-      it("should show 'Next User: O'", () => {
-        const wrapper = mount(<Game />);
-        const firstBtn = wrapper.find("button.tile").at(0);
-        firstBtn.simulate("click");
-        const header = wrapper.find("#header");
-        expect(header.text()).toBe("Next User: O");
       });
     });
   });
