@@ -42,5 +42,14 @@ describe("Game Unit Test", () => {
       expect(secondBtn.text()).toBe("O");
       expect(thirdBtn.text()).toBe("X");
     });
+
+    it("should not update the tile when clicked the second time", () => {
+      const wrapper = mount(<Game />);
+      const firstBtn = wrapper.find("button.tile").at(0);
+      firstBtn.simulate("click");
+      expect(firstBtn.text()).toBe("X");
+      firstBtn.simulate("click");
+      expect(firstBtn.text()).toBe("X");
+    });
   });
 });
