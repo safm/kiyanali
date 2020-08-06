@@ -1,10 +1,34 @@
 import React, { useState } from "react";
 import Board from "./Board";
+import Header from "./Header";
+import { checkWinner } from "./utils";
 
 const Game = () => {
   const [steps, setSteps] = useState([]);
   const [tiles, setTile] = useState(Array(9).fill(null));
   const [userX, setUserX] = useState(true);
+  const [gameInPlay, setGameInPlay] = useState(true);
+  const [winner, setWinner] = useState();
+
+  /**
+   * Called after every tile is clicked to detect if we have a winner
+   *
+   */
+  const checkForWinner = (boardState) => {
+    let status;
+    if (steps.length > 3) {
+      status = checkWinner(boardState);
+      if (status) {
+        setWinner(status);
+      }
+    }
+    if (steps.length === 8 && !status) {
+      status = "tie";
+    }
+    if (status) {
+      setGameInPlay(false);
+    }
+  };
 
   /**
    * Called when a tile is clicked. It manages the state of tiles.
@@ -13,13 +37,14 @@ const Game = () => {
    *
    */
   const onTileClick = (position) => {
-    if (!tiles[position]) {
+    if (!tiles[position] && gameInPlay) {
       const tempTiles = [...tiles];
       const charToInsert = userX ? "X" : "O";
       tempTiles[position] = charToInsert;
       setTile(tempTiles);
       setUserX(!userX);
       setSteps([...steps, tiles]);
+      checkForWinner(tempTiles);
     }
   };
 
@@ -33,6 +58,7 @@ const Game = () => {
     setSteps(otherSteps);
     setTile(lastStep[0]);
     setUserX(!userX);
+    setGameInPlay(true);
   };
 
   /**
@@ -43,6 +69,7 @@ const Game = () => {
     setSteps([]);
     setTile(Array(9).fill(null));
     setUserX(true);
+    setGameInPlay(true);
   };
 
   /**
@@ -51,7 +78,7 @@ const Game = () => {
    * @returns - A button html or an empty string
    *
    */
-  const generateUndoButton = () => {
+  const generateFooterButton = () => {
     if (steps.length) {
       return (
         <>
@@ -71,9 +98,9 @@ const Game = () => {
 
   return (
     <div id="game">
-      <div id="header">Next User: {userX ? "X" : "O"}</div>
+      <Header gameInPlay={gameInPlay} winner={winner} userX={userX} />
       <Board tiles={tiles} onTileClick={onTileClick} />
-      <div id="footer">{generateUndoButton()}</div>
+      <div id="footer">{generateFooterButton()}</div>
     </div>
   );
 };
