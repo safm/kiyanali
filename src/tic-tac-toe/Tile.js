@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 
 const Tile = (props) => {
   const { onClick: tileClicked, value, position } = props;
@@ -14,4 +14,4 @@ const Tile = (props) => {
   );
 };
 
-export default Tile;
+export default memo(Tile);
