@@ -11,7 +11,7 @@ body {
 }
 
 #game {
-  width: 275px;
+  width: 375px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -25,14 +25,14 @@ body {
 #board {
   display: flex;
   flex-wrap: wrap;
-  width: 240px;
+  width: 340px;
 }
 
 .tile {
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 6rem;
   width: 33%;
-  height: 60px;
+  height: 110px;
   padding: 0;
   margin: 0;
   border: 1px solid #333;
@@ -40,17 +40,53 @@ body {
   background-color: white;
   outline: none;
 }
+.tile.highlight {
+  background-color: green;
+  color: white;
+}
 
 #footer {
-  width: 200px;
+  width: 300px;
   display: flex;
   justify-content: space-between;
   margin: 16px 0;
+  flex-wrap: wrap;
 }
 
 #footer button {
   padding: 4px 12px;
-  border: 1px solid #aaa;
+  border-width: 1px;
+  background-color: cadetblue;
   border-color: #aaa #333 #333 #aaa;
   outline: none;
+  color: peachpuff;
+  flex-basis: 100%;
+  height: 30px;
+}
+
+h1,
+h2 {
+  text-align: center;
+}
+
+#players div {
+  margin-bottom: 10px;
+}
+
+#players input {
+  padding: 5px 3px;
+  margin-left: 10px;
+  border-width: 0 0 1px 0;
+  background-color: transparent;
+  font-size: 1rem;
+}
+
+#players button {
+  margin: 10px 0 0 118px;
+  width: 150px;
+  background-color: cadetblue;
+  border-color: #aaa #333 #333 #aaa;
+  height: 30px;
+  border-width: 1px;
+  color: peachpuff;
 }

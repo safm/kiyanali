@@ -20,7 +20,10 @@ export const checkWinner = (tiles) => {
   for (let i = 0; i < winningCells.length; i++) {
     const [a, b, c] = winningCells[i];
     if (tiles[a] && tiles[a] === tiles[b] && tiles[a] === tiles[c]) {
-      return tiles[a];
+      return {
+        winner: tiles[a],
+        winningTiles: winningCells[i],
+      };
     }
   }
 };

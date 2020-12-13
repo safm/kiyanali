@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Board from "./Board";
 import Header from "./Header";
+import Footer from "./Footer";
+import PlayerName from "../components/PlayerName";
 import { checkWinner } from "./utils";
 
 const Game = () => {
@@ -8,8 +10,22 @@ const Game = () => {
   const [gameState, setGameState] = useState({
     steps: [],
     tiles: Array(9).fill(null),
+    highlightTiles: Array(3).fill(null),
     userX: true,
+    startedWithX: true,
     gameInPlay: true,
+  });
+  const [players, setPlayers] = useState({
+    player1: {
+      name: undefined,
+      char: "X",
+      score: 0,
+    },
+    player2: {
+      name: undefined,
+      char: "O",
+      score: 0,
+    },
   });
 
   /**
@@ -22,10 +38,10 @@ const Game = () => {
     if (steps.length > 3) {
       status = checkWinner(boardState);
       if (status) {
-        setWinner(status);
+        setWinner(status.winner);
       }
     }
-    if (steps.length === 8 && !status) {
+    if (steps.length === 9 && !status) {
       status = "tie";
     }
     if (status) {
@@ -33,6 +49,7 @@ const Game = () => {
         return {
           ...state,
           gameInPlay: false,
+          highlightTiles: status.winningTiles || [],
         };
       });
     }
@@ -44,7 +61,7 @@ const Game = () => {
    * @param {number} position - The position of the tile clicked.
    *
    */
-  const onTileClick = (position) => {
+  const onTileClick = useCallback((position) => {
     let tempTiles;
     setGameState((state) => {
       const { gameInPlay, tiles, steps, userX } = state;
@@ -62,79 +79,101 @@ const Game = () => {
         return { ...state };
       }
     });
-  };
-  const onTileClickCached = useCallback(onTileClick, []);
+  }, []);
+
+  /**
+   * Called when player names are entered.
+   *
+   * @param {object} players - An object containing player1 and player2 names
+   *
+   */
+  const onPlayerNameSave = useCallback((players) => {
+    setPlayers((state) => {
+      let newState = { ...state };
+      newState.player1.name = players.player1;
+      newState.player2.name = players.player2;
+
+      return newState;
+    });
+  }, []);
 
   /**
    * Called when a undo is clicked. It restores board's previous state.
    *
    */
-  const undoLastAction = () => {
-    setGameState((state) => {
-      const { steps, userX } = state;
-      const lastStep = steps.slice(-1);
-      const otherSteps = steps.slice(0, -1);
-      return {
-        ...state,
-        steps: otherSteps,
-        tiles: lastStep[0],
-        userX: !userX,
-        gameInPlay: true,
-      };
-    });
-  };
+  // const undoLastAction = () => {
+  //   setGameState((state) => {
+  //     const { steps, userX } = state;
+  //     const lastStep = steps.slice(-1);
+  //     const otherSteps = steps.slice(0, -1);
+  //     return {
+  //       ...state,
+  //       steps: otherSteps,
+  //       tiles: lastStep[0],
+  //       userX: !userX,
+  //       gameInPlay: true,
+  //     };
+  //   });
+  // };
 
   /**
    * Called when a reset is clicked. It reset the board to be empty.
    *
    */
-  const resetBoard = () => {
-    setGameState({
-      steps: [],
-      tiles: Array(9).fill(null),
-      userX: true,
-      gameInPlay: true,
+  const newGame = useCallback(() => {
+    setGameState((state) => {
+      return {
+        steps: [],
+        tiles: Array(9).fill(null),
+        highlightTiles: Array(3).fill(null),
+        userX: !state.startedWithX,
+        startedWithX: !state.startedWithX,
+        gameInPlay: true,
+      };
     });
-  };
+    setWinner(null);
+  }, []);
 
-  /**
-   * It generates the html for the undo button
-   *
-   * @returns - A button html or an empty string
-   *
-   */
-  const generateFooterButton = () => {
-    const { steps } = gameState;
-    if (steps.length) {
-      return (
-        <>
-          <button id="undo" onClick={undoLastAction}>
-            Undo
-          </button>
-
-          <button id="reset" onClick={resetBoard}>
-            Reset
-          </button>
-        </>
-      );
-    } else {
-      return "";
-    }
-  };
-
-  const { gameInPlay, userX, tiles } = gameState;
-
+  // this is called every time a tile is clicked
   useEffect(() => {
     const { tiles } = gameState;
     checkForWinner(tiles);
   }, [gameState.tiles]);
 
+  // this is called every time a winner wins to update the score
+  useEffect(() => {
+    let winingPlayer;
+    if (winner === "X") {
+      winingPlayer = "player1";
+    } else if (winner === "O") {
+      winingPlayer = "player2";
+    }
+    if (winingPlayer) {
+      setPlayers((state) => {
+        let newState = { ...state };
+        newState[winingPlayer].score = state[winingPlayer].score + 1;
+        return newState;
+      });
+    }
+  }, [winner]);
+
+  const { gameInPlay, userX, tiles, highlightTiles } = gameState;
+
   return (
-    <div id="game">
-      <Header gameInPlay={gameInPlay} winner={winner} userX={userX} />
-      <Board tiles={tiles} onTileClick={onTileClickCached} />
-      <div id="footer">{generateFooterButton()}</div>
-    </div>
+    <>
+      <h2>Tic Tac Toe</h2>
+      <div id="game">
+        {!players.player1.name ? (
+          <PlayerName onSave={onPlayerNameSave} />
+        ) : (
+          <>
+            <Header gameInPlay={gameInPlay} winner={winner} userX={userX} players={players} />
+            <Board tiles={tiles} onTileClick={onTileClick} tilesToHighlight={highlightTiles} />
+            <Footer gameInPlay={gameInPlay} players={players} newGame={newGame} />
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

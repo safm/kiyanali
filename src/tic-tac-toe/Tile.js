@@ -1,10 +1,10 @@
 import React, { memo } from "react";
 
 const Tile = (props) => {
-  const { onClick: tileClicked, value, position } = props;
+  const { onClick: tileClicked, value, position, highlight } = props;
   return (
     <button
-      className="tile"
+      className={"tile" + (highlight ? " highlight" : "")}
       onClick={() => {
         tileClicked(position);
       }}
